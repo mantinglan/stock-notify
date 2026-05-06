@@ -8,12 +8,24 @@ class StockAPI {
   // 台股行情（Yahoo Finance）
   // ========================================
 
+  async _fetchYahooTW(ticker) {
+    const url = `https://query1.finance.yahoo.com/v8/finance/chart/${ticker}`;
+    const response = await axios.get(url);
+    const result = response.data.chart.result;
+    if (!result?.length) throw new Error('No data');
+    return result[0];
+  }
+
   async getTWStock(symbol) {
     try {
-      const url = `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}.TW`;
-      const response = await axios.get(url);
+      // 上市用 .TW，上櫃用 .TWO，自動偵測
+      let result;
+      try {
+        result = await this._fetchYahooTW(`${symbol}.TW`);
+      } catch {
+        result = await this._fetchYahooTW(`${symbol}.TWO`);
+      }
 
-      const result = response.data.chart.result[0];
       const quote = result.meta;
       const indicators = result.indicators.quote[0];
 
@@ -162,9 +174,17 @@ class StockAPI {
 
   async getTechnicals(symbol, market) {
     try {
-      const ticker = market === 'TW' ? `${symbol}.TW` : symbol;
-      const url = `https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?range=3mo&interval=1d`;
-      const response = await axios.get(url);
+      let response;
+      if (market === 'TW') {
+        try {
+          response = await axios.get(`https://query1.finance.yahoo.com/v8/finance/chart/${symbol}.TW?range=3mo&interval=1d`);
+          if (!response.data.chart.result) throw new Error('No data');
+        } catch {
+          response = await axios.get(`https://query1.finance.yahoo.com/v8/finance/chart/${symbol}.TWO?range=3mo&interval=1d`);
+        }
+      } else {
+        response = await axios.get(`https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?range=3mo&interval=1d`);
+      }
 
       const closes = response.data.chart.result[0].indicators.quote[0].close.filter(
         (v) => v !== null
