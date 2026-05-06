@@ -10,6 +10,18 @@ if (market !== 'TW' && market !== 'US') {
   process.exit(1);
 }
 
+// 台灣時間的星期幾（Heroku 跑 UTC，轉換 +8）
+const now = new Date(Date.now() + 8 * 60 * 60 * 1000);
+const day = now.getUTCDay(); // 0=日, 1=一 ... 6=六
+
+// 台股：週一到五；美股：週二到六（美股收盤對應台灣隔天早上）
+const isTradingDay = market === 'TW' ? day >= 1 && day <= 5 : day >= 2 && day <= 6;
+
+if (!isTradingDay) {
+  console.log(`⏭️ 今日非 ${market} 交易日，跳過推播`);
+  process.exit(0);
+}
+
 console.log(`🕐 定時任務觸發（${market}）...`);
 
 sendDailyReport(market)
