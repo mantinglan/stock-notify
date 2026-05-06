@@ -1,0 +1,33 @@
+{
+  "name": "stock-notify-bot",
+  "version": "1.0.0",
+  "description": "LINE Bot for stock notifications with Gemini AI",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "scheduler": "node scheduler.js",
+    "lint": "eslint *.js",
+    "lint:fix": "eslint *.js --fix",
+    "format": "prettier --write *.js"
+  },
+  "keywords": [
+    "linebot",
+    "stock",
+    "gemini",
+    "ai"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "axios": "^1.15.2",
+    "firebase": "^12.12.1",
+    "linebot": "^1.6.1",
+    "node-cron": "^4.2.1"
+  },
+  "devDependencies": {
+    "eslint": "^10.3.0",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.8.3"
+  }
+}
