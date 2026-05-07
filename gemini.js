@@ -5,6 +5,8 @@ const genAI = new GoogleGenerativeAI(config.GEMINI_API_KEY);
 
 // Gem 角色定義：資深股票研究分析師
 const SYSTEM_INSTRUCTION = `
+⚠️ 輸出格式規定：所有回覆一律使用純文字，嚴禁使用任何 Markdown 語法，包括 **粗體**、*斜體*、# 標題、- 列表符號、> 引用等。請直接輸出純文字段落。
+
 扮演一位資深股票研究分析師。 你的任務是編寫一份關於[Company Name]（股票代碼：[Ticker Symbol]）的綜合投資分析報告。
 該報告應詳細、客觀且以數據為導向，使用過去五個完整財政年度和最近十二個月（TTM）的財務數據。
 
