@@ -2,6 +2,7 @@ const axios = require('axios');
 const config = require('./config.js');
 
 const FINMIND_URL = 'https://api.finmindtrade.com/api/v4/data';
+const TIMEOUT = 20000;
 
 class StockAPI {
   // ========================================
@@ -10,7 +11,7 @@ class StockAPI {
 
   async _fetchYahooTW(ticker) {
     const url = `https://query1.finance.yahoo.com/v8/finance/chart/${ticker}`;
-    const response = await axios.get(url);
+    const response = await axios.get(url, { timeout: TIMEOUT });
     const result = response.data.chart.result;
     if (!result?.length) throw new Error('No data');
     return result[0];
@@ -58,6 +59,7 @@ class StockAPI {
     try {
       const dateStr = new Date().toISOString().split('T')[0];
       const response = await axios.get(FINMIND_URL, {
+        timeout: TIMEOUT,
         params: {
           dataset: 'TaiwanStockInstitutionalInvestorsBuySell',
           data_id: symbol,
@@ -105,6 +107,7 @@ class StockAPI {
       start.setMonth(start.getMonth() - 4);
 
       const response = await axios.get(FINMIND_URL, {
+        timeout: TIMEOUT,
         params: {
           dataset: 'TaiwanStockMonthRevenue',
           data_id: symbol,
@@ -145,6 +148,7 @@ class StockAPI {
       start.setDate(start.getDate() - 5); // 往前 5 天確保有資料
 
       const response = await axios.get(FINMIND_URL, {
+        timeout: TIMEOUT,
         params: {
           dataset: 'TaiwanStockPER',
           data_id: symbol,
@@ -177,13 +181,13 @@ class StockAPI {
       let response;
       if (market === 'TW') {
         try {
-          response = await axios.get(`https://query1.finance.yahoo.com/v8/finance/chart/${symbol}.TW?range=3mo&interval=1d`);
+          response = await axios.get(`https://query1.finance.yahoo.com/v8/finance/chart/${symbol}.TW?range=3mo&interval=1d`, { timeout: TIMEOUT });
           if (!response.data.chart.result) throw new Error('No data');
         } catch {
-          response = await axios.get(`https://query1.finance.yahoo.com/v8/finance/chart/${symbol}.TWO?range=3mo&interval=1d`);
+          response = await axios.get(`https://query1.finance.yahoo.com/v8/finance/chart/${symbol}.TWO?range=3mo&interval=1d`, { timeout: TIMEOUT });
         }
       } else {
-        response = await axios.get(`https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?range=3mo&interval=1d`);
+        response = await axios.get(`https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?range=3mo&interval=1d`, { timeout: TIMEOUT });
       }
 
       const closes = response.data.chart.result[0].indicators.quote[0].close.filter(
@@ -228,7 +232,7 @@ class StockAPI {
   async getUSStock(symbol) {
     try {
       const url = `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}`;
-      const response = await axios.get(url);
+      const response = await axios.get(url, { timeout: TIMEOUT });
 
       const result = response.data.chart.result[0];
       const meta = result.meta;
@@ -262,6 +266,7 @@ class StockAPI {
   async getUSOverview(symbol) {
     try {
       const response = await axios.get('https://www.alphavantage.co/query', {
+        timeout: TIMEOUT,
         params: {
           function: 'OVERVIEW',
           symbol,
@@ -304,6 +309,7 @@ class StockAPI {
   async getUSEarnings(symbol) {
     try {
       const response = await axios.get('https://www.alphavantage.co/query', {
+        timeout: TIMEOUT,
         params: {
           function: 'EARNINGS',
           symbol,

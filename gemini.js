@@ -55,6 +55,7 @@ const model = genAI.getGenerativeModel({
   systemInstruction: SYSTEM_INSTRUCTION,
 });
 
+
 // 每個用戶獨立的對話 session（用於 ask 指令）
 const chatSessions = new Map();
 const SESSION_TTL = 60 * 60 * 1000; // 1 小時

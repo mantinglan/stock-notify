@@ -3,16 +3,14 @@
 // ========================================
 
 module.exports = {
-  // LINE Bot 設定
-  LINE: {
-    channelId: process.env.LINE_CHANNEL_ID,
-    channelSecret: process.env.LINE_CHANNEL_SECRET,
-    channelAccessToken: process.env.LINE_CHANNEL_ACCESS_TOKEN,
-    userId: process.env.LINE_USER_ID,
-  },
-
   // Gemini API
-  GEMINI_API_KEY: process.env.GEMINI_API_KEY,
+  GEMINI_API_KEY: 'AIzaSyBrcNzIe1XjFpMB3B-W7xTPL2hKkk-sc74',
+
+  // Telegram Bot
+  TELEGRAM: {
+    token: process.env.TELEGRAM_TOKEN || '8862809676:AAFBhdfhaK6Dm5xx0-bHf8J71XJRO0OcPHA',
+    chatId: process.env.TELEGRAM_CHAT_ID || '8980495652',
+  },
 
   // 股市 API Keys
   ALPHA_VANTAGE_KEY: process.env.ALPHA_VANTAGE_KEY, // 美股
