@@ -4,12 +4,12 @@
 
 module.exports = {
   // Gemini API
-  GEMINI_API_KEY: 'AIzaSyBrcNzIe1XjFpMB3B-W7xTPL2hKkk-sc74',
+  GEMINI_API_KEY: process.env.GEMINI_API_KEY,
 
   // Telegram Bot
   TELEGRAM: {
-    token: process.env.TELEGRAM_TOKEN || '8862809676:AAFBhdfhaK6Dm5xx0-bHf8J71XJRO0OcPHA',
-    chatId: process.env.TELEGRAM_CHAT_ID || '8980495652',
+    token: process.env.TELEGRAM_TOKEN,
+    chatId: process.env.TELEGRAM_CHAT_ID,
   },
 
   // 股市 API Keys
