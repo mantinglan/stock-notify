@@ -1,6 +1,6 @@
+require('dotenv').config();
 const TelegramBot = require('node-telegram-bot-api');
 const axios = require('axios');
-const http = require('http');
 const config = require('./config.js');
 const { database, pledgeDB } = require('./database.js');
 const stockAPI = require('./stock-api.js');
@@ -392,10 +392,7 @@ async function buildPledgeSection() {
 // ── 啟動 ────────────────────────────────────────────────────
 
 if (require.main === module) {
-  const port = process.env.PORT || 5000;
-  http.createServer((req, res) => res.end('OK')).listen(port, () => {
-    console.log('📈 Stock Notify Bot 上線！');
-  });
+  console.log('📈 Stock Notify Bot 上線！');
 }
 
 module.exports = { sendDailyReport };

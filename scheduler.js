@@ -2,6 +2,7 @@
 // 定時任務腳本（給 Heroku Scheduler 使用）
 // ========================================
 
+require('dotenv').config();
 const { sendDailyReport } = require('./index.js');
 
 const market = process.argv[2]; // TW 或 US
