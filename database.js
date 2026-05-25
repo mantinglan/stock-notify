@@ -1,17 +1,14 @@
-const { initializeApp } = require('firebase/app');
-const {
-  getFirestore,
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  setDoc,
-  deleteDoc,
-} = require('firebase/firestore');
-const config = require('./config.js');
+const admin = require('firebase-admin');
 
-const app = initializeApp(config.FIREBASE);
-const db = getFirestore(app);
+const serviceAccount = JSON.parse(
+  Buffer.from(process.env.FIREBASE_SERVICE_ACCOUNT, 'base64').toString('utf-8')
+);
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+});
+
+const db = admin.firestore();
 
 // ========================================
 // Watchlist
@@ -19,20 +16,20 @@ const db = getFirestore(app);
 
 class WatchlistDB {
   async getAll() {
-    const snapshot = await getDocs(collection(db, 'watchlist'));
+    const snapshot = await db.collection('watchlist').get();
     return snapshot.docs.map((d) => d.data());
   }
 
   async add(symbol, market, name = '') {
     const sym = symbol.toUpperCase();
-    const ref = doc(db, 'watchlist', sym);
-    const existing = await getDoc(ref);
+    const ref = db.collection('watchlist').doc(sym);
+    const existing = await ref.get();
 
-    if (existing.exists()) {
+    if (existing.exists) {
       return { success: false, message: `${sym} 已在追蹤清單中` };
     }
 
-    await setDoc(ref, {
+    await ref.set({
       symbol: sym,
       market: market.toUpperCase(),
       name,
@@ -44,21 +41,20 @@ class WatchlistDB {
 
   async remove(symbol) {
     const sym = symbol.toUpperCase();
-    const ref = doc(db, 'watchlist', sym);
-    const existing = await getDoc(ref);
+    const ref = db.collection('watchlist').doc(sym);
+    const existing = await ref.get();
 
-    if (!existing.exists()) {
+    if (!existing.exists) {
       return { success: false, message: `${sym} 不在追蹤清單中` };
     }
 
-    await deleteDoc(ref);
+    await ref.delete();
     return { success: true, message: `已移除 ${sym}` };
   }
 
   async get(symbol) {
-    const ref = doc(db, 'watchlist', symbol.toUpperCase());
-    const d = await getDoc(ref);
-    return d.exists() ? d.data() : null;
+    const snap = await db.collection('watchlist').doc(symbol.toUpperCase()).get();
+    return snap.exists ? snap.data() : null;
   }
 
   async getStats() {
@@ -77,7 +73,7 @@ class WatchlistDB {
 
 class PledgeDB {
   async getAll() {
-    const snapshot = await getDocs(collection(db, 'pledges'));
+    const snapshot = await db.collection('pledges').get();
     return snapshot.docs.map((d) => d.data());
   }
 
@@ -93,14 +89,14 @@ class PledgeDB {
     estimatedDividend,
   }) {
     const sym = symbol.toUpperCase();
-    const ref = doc(db, 'pledges', sym);
-    const existing = await getDoc(ref);
+    const ref = db.collection('pledges').doc(sym);
+    const existing = await ref.get();
 
-    if (existing.exists()) {
+    if (existing.exists) {
       return { success: false, message: `${sym} 已有質押合約，請先刪除再新增` };
     }
 
-    await setDoc(ref, {
+    await ref.set({
       symbol: sym,
       market: /^\d{4}$/.test(sym) ? 'TW' : 'US',
       shares: Number(shares),
@@ -119,21 +115,20 @@ class PledgeDB {
 
   async remove(symbol) {
     const sym = symbol.toUpperCase();
-    const ref = doc(db, 'pledges', sym);
-    const existing = await getDoc(ref);
+    const ref = db.collection('pledges').doc(sym);
+    const existing = await ref.get();
 
-    if (!existing.exists()) {
+    if (!existing.exists) {
       return { success: false, message: `${sym} 沒有質押合約` };
     }
 
-    await deleteDoc(ref);
+    await ref.delete();
     return { success: true, message: `已刪除 ${sym} 質押合約` };
   }
 
   async get(symbol) {
-    const ref = doc(db, 'pledges', symbol.toUpperCase());
-    const d = await getDoc(ref);
-    return d.exists() ? d.data() : null;
+    const snap = await db.collection('pledges').doc(symbol.toUpperCase()).get();
+    return snap.exists ? snap.data() : null;
   }
 }
 

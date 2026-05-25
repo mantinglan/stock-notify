@@ -24,16 +24,4 @@ module.exports = {
 
   // Gemini 模型設定
   GEMINI_MODEL: 'gemini-3.1-pro-preview',
-
-  // Firebase 設定
-  FIREBASE: {
-    apiKey: 'AIzaSyAhrAmg0okaEn88JfJWKEwH588vUvrgrFY',
-    authDomain: 'stock-notify-e48fa.firebaseapp.com',
-    databaseURL: 'https://stock-notify-e48fa-default-rtdb.firebaseio.com',
-    projectId: 'stock-notify-e48fa',
-    storageBucket: 'stock-notify-e48fa.firebasestorage.app',
-    messagingSenderId: '284852456183',
-    appId: '1:284852456183:web:7bee9f5e0a73637ada21f2',
-    measurementId: 'G-WGPBTGDBET',
-  },
 };
